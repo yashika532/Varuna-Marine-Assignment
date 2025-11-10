@@ -41,3 +41,19 @@ export async function postApplyBankedCB(shipId: string, year: number, amount: nu
   });
   return r.json();
 }
+
+// ✅ Fetch CBs (for ships)
+export async function fetchAdjustedCBs(year: number) {
+  const r = await fetch(`${BASE}/compliance/adjusted-cb?year=${year}`);
+  return r.json();
+}
+
+// ✅ Create Pool
+export async function createPool(year: number, members: any[]) {
+  const r = await fetch(`${BASE}/pools`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ year, members }),
+  });
+  return r.json();
+}
