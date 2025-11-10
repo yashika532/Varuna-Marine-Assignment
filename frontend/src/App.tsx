@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import RoutesPage from "./adapters/ui/pages/RoutesPage";
 import ComparePage from "./adapters/ui/pages/ComparePage";
+import BookingPage from "./adapters/ui/pages/BankingPage"
+import PoolingPage from "./adapters/ui/pages/PoolingPage"
 import { Ship, BarChart2, Banknote, Users } from "lucide-react";
 
 export default function App() {
@@ -52,16 +54,8 @@ export default function App() {
       <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
         {tab === "routes" && <RoutesPage />}
         {tab === "compare" && <ComparePage />}
-        {tab === "banking" && (
-          <div className="p-10 bg-white rounded-2xl shadow border text-center text-gray-600 font-medium">
-            🏦 Banking module coming soon...
-          </div>
-        )}
-        {tab === "pooling" && (
-          <div className="p-10 bg-white rounded-2xl shadow border text-center text-gray-600 font-medium">
-            🤝 Pooling feature coming soon...
-          </div>
-        )}
+        {tab === "banking" && <BookingPage />}
+        {tab === "pooling" && <PoolingPage />}
       </main>
 
       {/* Footer */}
