@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import {
   fetchComplianceCB,
-  postBankCB
-} from "../../infrastructure/apiClient"; // ✅ import from your updated apiClient.ts
+  postBankCB,
+  postApplyBankedCB,
+} from "../../infrastructure/apiClient";
 
 export default function BankingPage() {
   const [shipId, setShipId] = useState("R001");
@@ -10,42 +11,43 @@ export default function BankingPage() {
   const [cb, setCb] = useState<number | null>(null);
   const [status, setStatus] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [amount, setAmount] = useState<number>(0);
 
-  // ✅ Compute Compliance Balance
   const getCB = async () => {
-    setLoading(true);
-    setMessage("");
     try {
       const data = await fetchComplianceCB(shipId, year);
-      setCb(Number(data.cb_before));
-      setStatus(data.status || "Computed");
-      setMessage("✅ Compliance Balance computed successfully!");
-    } catch (err: any) {
+      setCb(data.cb_before || data.cb_gco2eq);
+      setStatus(data.cb_before > 0 ? "Surplus" : "Deficit");
+      setMessage("");
+    } catch (err) {
       console.error(err);
-      setMessage("❌ Failed to compute Compliance Balance.");
-    } finally {
-      setLoading(false);
+      setMessage("❌ Failed to compute CB.");
     }
   };
 
-  // ✅ Bank the Surplus CB
   const handleBank = async () => {
-    if (cb === null) {
-      setMessage("⚠️ Please compute CB first.");
-      return;
-    }
-
-    setLoading(true);
-    setMessage("");
     try {
-      const data = await postBankCB(shipId, year);
-      setMessage(data.message || "✅ Banked successfully!");
-    } catch (err: any) {
+      const res = await postBankCB(shipId, year);
+      if (res.error || res.message?.includes("Cannot bank"))
+        setMessage("❌ Failed to bank CB.");
+      else setMessage("✅ Banked successfully!");
+    } catch (err) {
       console.error(err);
       setMessage("❌ Failed to bank CB.");
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const handleApply = async () => {
+    try {
+      const res = await postApplyBankedCB(shipId, year, amount);
+      if (res.error) setMessage("❌ Failed to apply banked CB.");
+      else
+        setMessage(
+          `✅ Applied ${amount} gCO₂eq successfully. New CB: ${res.cb_after}`
+        );
+    } catch (err) {
+      console.error(err);
+      setMessage("❌ Failed to apply banked CB.");
     }
   };
 
@@ -58,53 +60,66 @@ export default function BankingPage() {
           className="border p-2"
           value={shipId}
           onChange={(e) => setShipId(e.target.value)}
-          placeholder="Enter Ship ID"
         />
         <input
           type="number"
           className="border p-2"
           value={year}
           onChange={(e) => setYear(Number(e.target.value))}
-          placeholder="Enter Year"
         />
         <button
-          disabled={loading}
-          className={`${
-            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-          } text-white px-4 py-2 rounded`}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
           onClick={getCB}
         >
-          {loading ? "Calculating..." : "Get CB"}
+          Get CB
         </button>
       </div>
 
       {cb !== null && (
-        <div className="mb-3 text-sm">
+        <div className="mb-3">
           <p>
             <strong>Compliance Balance:</strong> {cb.toFixed(2)} gCO₂eq
           </p>
           <p>
             <strong>Status:</strong>{" "}
-            {cb > 0 ? (
-              <span className="text-green-600">Surplus ✅</span>
-            ) : (
-              <span className="text-red-600">Deficit ❌</span>
-            )}
+            <span
+              className={status === "Surplus" ? "text-green-600" : "text-red-600"}
+            >
+              {status} {status === "Surplus" ? "✅" : "❌"}
+            </span>
           </p>
         </div>
       )}
 
+      {/* Bank Button */}
       <button
-        disabled={loading}
         onClick={handleBank}
-        className={`${
-          loading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
-        } text-white px-4 py-2 rounded`}
+        className="bg-green-600 text-white px-4 py-2 rounded mr-2"
       >
-        {loading ? "Processing..." : "Bank Surplus"}
+        Bank Surplus
       </button>
 
-      {message && <p className="mt-3 text-blue-600 font-medium">{message}</p>}
+      {/* Apply Banked CB Section */}
+      <div className="mt-6 border-t pt-4">
+        <h2 className="font-semibold mb-2">Apply Banked CB</h2>
+        <div className="flex gap-3 mb-3">
+          <input
+            type="number"
+            placeholder="Amount (gCO₂eq)"
+            className="border p-2"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+          />
+          <button
+            onClick={handleApply}
+            className="bg-yellow-600 text-white px-4 py-2 rounded"
+          >
+            Apply Banked CB
+          </button>
+        </div>
+      </div>
+
+      {message && <p className="mt-3 text-blue-600">{message}</p>}
     </div>
   );
 }
