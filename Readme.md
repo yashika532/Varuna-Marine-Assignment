@@ -1,8 +1,7 @@
-```markdown
 # ⚓ FuelEU Maritime — Full Stack Developer Assignment
 
 A structured **FuelEU Maritime Compliance Platform** showcasing both **frontend and backend** implementation under **Hexagonal Architecture (Ports & Adapters)**.  
-It calculates route compliance, banking, and pooling logic for maritime emissions under the **FuelEU Regulation**.
+It calculates route compliance, banking, and pooling logic for maritime emissions under the FuelEU Regulation.
 
 ---
 
@@ -10,114 +9,84 @@ It calculates route compliance, banking, and pooling logic for maritime emission
 
 | Layer | Technology |
 |--------|-------------|
-| **Frontend** | React, TypeScript, TailwindCSS, Vite |
-| **Backend** | Node.js, Express, TypeScript |
-| **Database** | PostgreSQL |
-| **Architecture** | Hexagonal (Ports & Adapters) |
-| **Tools** | dotenv, pg, ts-node-dev, nodemon |
+| Frontend | React, TypeScript, TailwindCSS, Vite |
+| Backend | Node.js, Express, TypeScript |
+| Database | PostgreSQL |
+| Architecture | Hexagonal (Ports & Adapters) |
+| Tools | dotenv, pg, ts-node-dev, nodemon |
 
 ---
 
 ## 📁 Folder Structure
 
-```
-
 frontend/
-├── src/
-│   ├── adapters/ui/
-│   ├── adapters/infrastructure/
-│   ├── core/
-│   └── shared/
+src/
+adapters/ui/
+adapters/infrastructure/
+core/
+shared/
 
 backend/
-├── src/
-│   ├── adapters/
-│   │   ├── inbound/http/
-│   │   └── outbound/postgres/
-│   ├── core/
-│   ├── application/
-│   ├── domain/
-│   ├── infrastructure/
-│   ├── db/
-│   └── server/
+src/
+adapters/
+inbound/http/
+outbound/postgres/
+core/
+application/
+domain/
+infrastructure/
+db/
+server/
 
-````
 
 ---
 
 ## ⚙️ Setup Instructions
 
 ### 🧩 1. Clone Repository
-
 ```bash
 git clone https://github.com/your-username/FuelEU-Maritime.git
 cd FuelEU-Maritime
-````
 
----
-
-### 🧠 2. Backend Setup
-
-```bash
+2. Backend Setup
 cd backend
 npm install
-```
 
-Create a `.env` file inside `/backend`:
+Create a .env file in /backend:
 
-```bash
 PG_USER=postgres
 PG_PASSWORD=your_password
 PG_HOST=localhost
 PG_PORT=5432
 PG_DATABASE=fueleu
-```
 
 Start the server:
-
-```bash
 npm run dev
-```
+Runs on http://localhost:4000
 
-> Runs on: [http://localhost:4000](http://localhost:4000)
-
----
-
-### 🎨 3. Frontend Setup
-
-```bash
+🎨 3. Frontend Setup
 cd frontend
 npm install
 npm run dev
-```
 
-> Runs on: [http://localhost:5173](http://localhost:5173)
 
----
+Runs on http://localhost:5173
 
-## 🔌 API Endpoints
+| Method | Endpoint                         | Description                        |
+| ------ | -------------------------------- | ---------------------------------- |
+| GET    | `/api/routes`                    | Fetch all maritime routes          |
+| POST   | `/api/routes/:id/baseline`       | Set a baseline route               |
+| GET    | `/api/routes/comparison`         | Compare baseline with other routes |
+| GET    | `/api/compliance/cb?shipId&year` | Compute Compliance Balance         |
+| POST   | `/api/banking/bank`              | Bank positive compliance balance   |
+| POST   | `/api/banking/apply`             | Apply banked surplus               |
+| POST   | `/api/pools`                     | Create a pooling agreement         |
 
-| Method   | Endpoint                         | Description                        |
-| -------- | -------------------------------- | ---------------------------------- |
-| **GET**  | `/api/routes`                    | Fetch all maritime routes          |
-| **POST** | `/api/routes/:id/baseline`       | Set a baseline route               |
-| **GET**  | `/api/routes/comparison`         | Compare baseline with other routes |
-| **GET**  | `/api/compliance/cb?shipId&year` | Compute Compliance Balance         |
-| **POST** | `/api/banking/bank`              | Bank positive compliance balance   |
-| **POST** | `/api/banking/apply`             | Apply banked surplus               |
-| **POST** | `/api/pools`                     | Create a pooling agreement         |
-
----
-
-## 🧪 Testing
+🧪 Testing
 
 Run unit and integration tests (optional):
 
-```bash
 npm run test
-```
-
----
 
 ## 🧠 Author
 
@@ -132,3 +101,7 @@ npm run test
 ```
 
 ---
+
+✅ **Now you can just copy this entire block into `README.md`** —  
+GitHub will render it with perfect formatting (tables, emojis, and code blocks).
+```
